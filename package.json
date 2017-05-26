@@ -1,0 +1,16 @@
+{
+  "name": "simple_account",
+  "version": "1.0.0",
+  "description": "A Simple Account",
+  "main": "truffle.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "scripts/test.sh",
+    "console": "truffle console",
+    "coverage": "scripts/coverage.sh"
+  },
+  "author": "Jacob Payne",
+  "license": "MIT"
+}

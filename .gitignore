@@ -1,0 +1,9 @@
+#NPM
+node_modules/
+
+#TRUFFLE
+build/
+installed_contracts
+
+#OSX
+.DS_Store/

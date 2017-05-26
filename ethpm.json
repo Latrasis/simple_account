@@ -1,0 +1,9 @@
+{
+  "package_name": "simple_account",
+  "version": "0.0.0",
+  "description": "Simple Account",
+  "dependencies": {
+    "zeppelin": "1.0.5"
+  },
+  "license": "MIT"
+}
