@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "scripts/test.sh",
-    "install": "truffle install",
+    "postinstall": "truffle install",
     "console": "truffle console",
     "coverage": "scripts/coverage.sh"
   },
