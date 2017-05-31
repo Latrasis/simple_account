@@ -19,8 +19,12 @@ contract AbstractPayroll is Ownable {
     _;
   }
 
+  // Properties
   mapping (address => Employee) public employeeOf;
   address oracle;
+
+  /* PAYABLE */
+  function addFunds() payable;
 
   /* PUBLIC */
   function getEmployeeCount() constant returns (uint256);
@@ -29,7 +33,6 @@ contract AbstractPayroll is Ownable {
   function calculatePayrollBurnrate() constant returns (uint256); // Monthly usd amount spent in salaries
   function calculatePayrollRunway() constant returns (uint256); // Days until the contract can run out of funds
   
-  function addFunds() payable;
 
   // /* OWNER ONLY */
   function addEmployee(address accountAddress, address[] allowedTokens, uint256 initialYearlyUSDSalary);
