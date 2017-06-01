@@ -16,7 +16,8 @@
   "license": "MIT",
   "devDependencies": {
     "ethereumjs-testrpc": "^3.0.5",
-    "truffle": "^3.2.4"
+    "truffle": "^3.2.4",
+    "truffle-default-builder": "^2.0.0"
   },
   "dependencies": {
     "solidity-coverage": "^0.1.0"

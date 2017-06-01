@@ -1,42 +1,47 @@
 pragma solidity ^0.4.11;
 
-import "zeppelin/lifecycle/TokenDestructible.sol";
 import "zeppelin/ownership/Ownable.sol";
 
 // For the sake of simplicity lets asume USD is a ERC20 token
 // Also lets asume we can 100% trust the exchange rate oracle
 contract AbstractPayroll is Ownable {
+  
+  // Employee
+  mapping (address => Employee) public employeeOf;
+  uint256 public employeeCount;
+
+  // Tokens
+  mapping (address => uint256) public tokenUSDValueOf;
+
+  // Oracle
+  address oracle;
+
+  event UpdateExchangeRate(address token, uint256 USDrate, address oracle, uint256 timestamp);
+  event NewEmployee(address accountAddress, uint256 timestamp);
+  event RemovedEmployee(address accountAddress, uint256 timestamp);
 
   struct Employee {
     address[] allowedTokens;
-    uint256 dailyLimit;
+    uint256 dailySalary;
   }
 
   modifier onlyEmployee() {
-    if (employeeOf[msg.sender].dailyLimit == 0) {
+    if (employeeOf[msg.sender].dailySalary == 0) {
       throw;
     }
     _;
   }
 
-  // Properties
-  mapping (address => Employee) public employeeOf;
-  address oracle;
-
   /* PAYABLE */
-  function addFunds() payable;
+  function () payable;
 
   /* PUBLIC */
-  function getEmployeeCount() constant returns (uint256);
-  function getEmployee(uint256 employeeId) constant returns (address employee); // Return all important info too
-
   function calculatePayrollBurnrate() constant returns (uint256); // Monthly usd amount spent in salaries
   function calculatePayrollRunway() constant returns (uint256); // Days until the contract can run out of funds
   
-
   // /* OWNER ONLY */
-  function addEmployee(address accountAddress, address[] allowedTokens, uint256 initialYearlyUSDSalary);
-  function setEmployeeSalary(uint256 employeeId, uint256 yearlyUSDSalary);
+  function addEmployee(address eAddress, address[] allowedTokens, uint256 dailySalary);
+  function setEmployeeSalary(uint256 employeeId, uint256 dailySalary);
   function removeEmployee(uint256 employeeId);
   function setOracle(address oracle);
 
@@ -47,5 +52,3 @@ contract AbstractPayroll is Ownable {
   /* ORACLE ONLY */
   function setExchangeRate(address token, uint256 usdExchangeRate); // uses decimals from token
 }
-
-// contract Payroll is PayrollInterface, TokenDestructible {};

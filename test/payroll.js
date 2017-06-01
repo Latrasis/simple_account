@@ -13,7 +13,13 @@ contract('Payroll', function (accounts) {
 
     describe('Payable Calls', function () {
         describe('Default', function () {
-            throw new Error('Unimplemented')            
+            it('should receive tokens', async function () {
+                let payroll = await Payroll.deployed();
+                await payroll.send(100);
+                
+                let balance = web3.eth.getBalance(payroll.address).toNumber();
+                assert.equal(balance, 100);
+            })           
         })
         describe('.addFunds() payable', function () {
             throw new Error('Unimplemented')
