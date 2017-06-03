@@ -4,7 +4,7 @@ import "zeppelin/ownership/Ownable.sol";
 
 // For the sake of simplicity lets asume USD is a ERC20 token
 // Also lets asume we can 100% trust the exchange rate oracle
-contract AbstractPayroll is Ownable {
+contract AbstractPayroll {
   
   // Employee
   mapping (address => Employee) public employeeOf;
@@ -32,17 +32,25 @@ contract AbstractPayroll is Ownable {
     _;
   }
 
+  modifier onlyOracle() {
+    if (msg.sender == oracle) {
+      throw;
+    }
+    _;
+  }
+
   /* PAYABLE */
   function () payable;
 
   /* PUBLIC */
+  // function getSalaryOf(address eAddress) constant returns (uint256);
   function calculatePayrollBurnrate() constant returns (uint256); // Monthly usd amount spent in salaries
   function calculatePayrollRunway() constant returns (uint256); // Days until the contract can run out of funds
   
   // /* OWNER ONLY */
   function addEmployee(address eAddress, address[] allowedTokens, uint256 dailySalary);
-  function setEmployeeSalary(uint256 employeeId, uint256 dailySalary);
-  function removeEmployee(uint256 employeeId);
+  function setEmployeeSalary(address eAddress, uint256 dailySalary);
+  function removeEmployee(address eAddress);
   function setOracle(address oracle);
 
   /* EMPLOYEE ONLY */
