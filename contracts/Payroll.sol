@@ -47,8 +47,11 @@ contract Payroll is AbstractPayroll, TokenDestructible {
     employee.dailySalary = dailySalary;
   }
   function removeEmployee(address eAddress) onlyOwner {
-    employeeOf[eAddress].dailySalary = 0;
-    employeeOf[eAddress].allowedTokens.length = 0;
+    var employee = employeeOf[eAddress]
+    employee.dailySalary = 0;
+    employee.allowedTokens.length = 0;
+    employee.distribution.length = 0;
+
     RemovedEmployee(eAddress, now);
   }
   function setOracle(address oracle) onlyOwner {}

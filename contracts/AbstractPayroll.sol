@@ -20,13 +20,10 @@ contract AbstractPayroll {
   event NewEmployee(address accountAddress, uint256 timestamp);
   event RemovedEmployee(address accountAddress, uint256 timestamp);
 
-  // struct Salary {
-  //   address token;
-  //   uint256 dailySalary;
-  // }
 
   struct Employee {
     address[] allowedTokens;
+    uint256[] distribution;
     uint256 dailySalary;
   }
 
