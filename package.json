@@ -16,6 +16,7 @@
   "author": "Jacob Payne",
   "license": "MIT",
   "devDependencies": {
+    "debug": "^2.6.8",
     "ethereumjs-testrpc": "^3.0.5",
     "truffle": "^3.2.4"
   },

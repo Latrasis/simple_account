@@ -20,10 +20,13 @@ contract AbstractPayroll {
   event NewEmployee(address accountAddress, uint256 timestamp);
   event RemovedEmployee(address accountAddress, uint256 timestamp);
 
+  struct Salary {
+    address token;
+    uint256 dailySalary;
+  }
 
   struct Employee {
-    address[] allowedTokens;
-    uint256[] distribution;
+    Salary[] allowedTokens;
     uint256 dailySalary;
   }
 
@@ -50,7 +53,7 @@ contract AbstractPayroll {
   function calculatePayrollRunway() constant returns (uint256); // Days until the contract can run out of funds
   
   // /* OWNER ONLY */
-  function addEmployee(address eAddress, address[] allowedTokens, uint256 dailySalary);
+  function addEmployee(address eAddress, address[] allowedTokens, uint256[] distribution, uint256 dailySalary);
   function setEmployeeSalary(address eAddress, uint256 dailySalary);
   function removeEmployee(address eAddress);
   function setOracle(address oracle);
