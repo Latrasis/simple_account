@@ -14,11 +14,16 @@ contract AbstractPayroll {
   mapping (address => uint256) public tokenUSDValueOf;
 
   // Oracle
-  address oracle;
+  address public oracle;
 
   event UpdateExchangeRate(address token, uint256 USDrate, address oracle, uint256 timestamp);
   event NewEmployee(address accountAddress, uint256 timestamp);
   event RemovedEmployee(address accountAddress, uint256 timestamp);
+
+  // struct Salary {
+  //   address token;
+  //   uint256 dailySalary;
+  // }
 
   struct Employee {
     address[] allowedTokens;
@@ -54,7 +59,7 @@ contract AbstractPayroll {
   function setOracle(address oracle);
 
   /* EMPLOYEE ONLY */
-  function determineAllocation(address[] tokens, uint256[] distribution); // only callable once every 6 months
+  function setAllocation(address[] tokens, uint256[] distribution); // only callable once every 6 months
   function payday(); // only callable once a month
 
   /* ORACLE ONLY */

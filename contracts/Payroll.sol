@@ -35,7 +35,7 @@ contract Payroll is AbstractPayroll, TokenDestructible {
     var employee = employeeOf[eAddress];
     if (employee.dailySalary > 0) throw;
     if (allowedTokens.length == 0) throw;
-
+    
     employee.allowedTokens = allowedTokens;
     employee.dailySalary = dailySalary;
 
@@ -54,7 +54,7 @@ contract Payroll is AbstractPayroll, TokenDestructible {
   function setOracle(address oracle) onlyOwner {}
 
   /* EMPLOYEE ONLY */
-  function determineAllocation(address[] tokens, uint256[] distribution) onlyEmployee {}
+  function setAllocation(address[] tokens, uint256[] distribution) onlyEmployee {}
   function payday() onlyEmployee {}
 
   /* ORACLE ONLY */
