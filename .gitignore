@@ -2,8 +2,9 @@
 node_modules/
 
 #TRUFFLE
-build/
+build
 installed_contracts
+allFiredEvents
 
 #OSX
-.DS_Store/
+.DS_Store

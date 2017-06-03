@@ -10,14 +10,14 @@
     "test": "scripts/test.sh",
     "postinstall": "truffle install",
     "console": "truffle console",
+    "truffle": "truffle",
     "coverage": "scripts/coverage.sh"
   },
   "author": "Jacob Payne",
   "license": "MIT",
   "devDependencies": {
     "ethereumjs-testrpc": "^3.0.5",
-    "truffle": "^3.2.4",
-    "truffle-default-builder": "^2.0.0"
+    "truffle": "^3.2.4"
   },
   "dependencies": {
     "solidity-coverage": "^0.1.0"
