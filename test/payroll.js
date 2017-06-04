@@ -208,7 +208,30 @@ contract('Payroll', function (accounts) {
 
     describe('Oracle Calls', function () {
         describe('setExchangeRate(address token, uint256 usdExchangeRate)', function () {
-            it('should change exchange rate for a token iff oracle')
+            let payroll = false
+            let tokenA = false
+            let tokenB = false
+            let tokenC = false            
+            let employee = accounts[1]
+
+            before(async function() {
+                payroll = await Payroll.new()
+                tokenA = await SimpleToken.new()
+                tokenB = await SimpleToken.new()
+                tokenC = await SimpleToken.new()                
+                return payroll.setOracle(employee)
+            })
+
+            it('should change exchange rate for a token iff oracle', async function() {
+                try {
+                    await payroll.setExchangeRate([tokenA.address, tokenB.address], [3,4], {from: oracle})
+                } finally {
+                    let valueOfA = await payroll.tokenUSDValueOf.call(tokenA.address)
+                    let valueOfB = await payroll.tokenUSDValueOf.call(tokenB.address)
+                    assert.equal(valueOfA, 3)
+                    assert.eqaual(valueOfB, 4)
+                }
+            })
         })
     })
 
