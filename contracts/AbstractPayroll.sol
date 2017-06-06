@@ -26,6 +26,8 @@ contract AbstractPayroll {
     address token;
     /// A daily salary of that specific token
     uint256 dailySalary;
+    /// Total Salary Spent
+    uint256 lastPayDay;
   }
 
   /// Defines an Employee Salary
