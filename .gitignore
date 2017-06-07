@@ -5,6 +5,8 @@ node_modules/
 build
 installed_contracts
 allFiredEvents
+coverage
+coverage.json
 
 #OSX
 .DS_Store
