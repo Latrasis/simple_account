@@ -28,10 +28,6 @@ library SalaryType {
   function updateValue(Self storage self, uint256 exchangeValue) internal returns (bool error) {
     // Checks for Token address and valid params
     if (self.token == 0) return true;
-    // If allocation or exchange value equal zero, assume zero amount
-    if (self.allocation == 0 || exchangeValue == 0) {
-        self.amount = 0;
-    }
 
     // TODO: Need to handle conversion checks for accuracy
     self.amount = exchangeValue * self.allocation;

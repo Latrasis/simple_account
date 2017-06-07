@@ -68,6 +68,8 @@ library EmployeeType {
     // At this point we can update the rest
     self.totalSalary = totalSalary;
     self.paymentPeriod = paymentPeriod;
+
+    return false;
   }
 
   // determines today's index.
