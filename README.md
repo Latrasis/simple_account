@@ -1,4 +1,4 @@
-# Simple Account Contract
+# Simple Payroll Contract
 Uses the [Truffle Smart Contract Framework](http://truffleframework.com).
 
 ## Installation
