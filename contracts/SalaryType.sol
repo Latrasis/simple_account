@@ -27,7 +27,7 @@ library SalaryType {
   /// exchangeValue: where exchangeValue * allocation = Self.amount
   function updateValue(Self storage self, uint256 exchangeValue) internal returns (bool error) {
     // Checks for Token address and valid params
-    if (self.token == 0) return true;
+    if (self.token == 0 || exchangeValue == 0) return true;
 
     // TODO: Need to handle conversion checks for accuracy
     self.amount = exchangeValue * self.allocation;
