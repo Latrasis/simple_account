@@ -81,7 +81,7 @@ contract Payroll is AbstractPayroll, TokenDestructible {
         var newTokenSalary = employee.allowedTokens[i];
         newTokenSalary.token = token;
         newTokenSalary.dailySalary = amountInToken;
-        newTokenSalary.lastPayDay = now / 1 day;
+        newTokenSalary.lastPayDay = now / 1 days;
     }
 
     NewEmployee(eAddress, now);
@@ -135,38 +135,35 @@ contract Payroll is AbstractPayroll, TokenDestructible {
 
   /// Payday pays employee in tokens in full owed
   function payday() onlyEmployee {
-    var employee = employeeOf[msg.sender];
+    // var employee = employeeOf[msg.sender];
 
-    uint256 today = now / 1 day;
-    for (uint256 i = 0; i < employee.allowedTokens; i++) {
-        var salary = employee.allowedTokens[i];
-        var token = ERC20Basic(salary.token);
+    // uint256 today = now / 1 day;
+    // for (uint256 i = 0; i < employee.allowedTokens; i++) {
+    //     var salary = employee.allowedTokens[i];
+    //     var token = ERC20Basic(salary.token);
 
-        // Check how many days have passed
-        uint256 daysPassed = today - salary.lastPayDay;
-        // Check for overflow
-        if ( today < daysPassed ) daysPassed -= (0-1);
+    //     // Check how many days have passed
+    //     uint256 daysPassed = today - salary.lastPayDay;
+    //     // Check for overflow
+    //     if ( today < daysPassed ) daysPassed -= (0-1);
 
-        // Total Due: DailyLimit * DaysPassed
-        var total = SafeMath.mul(daysPassed, salary.dailySalary);
+    //     // Total Due: DailyLimit * DaysPassed
+    //     var total = SafeMath.mul(daysPassed, salary.dailySalary);
 
-        // Check Payroll Balance
-        if (token.balanceOf(this) < total) throw;
-        // Update LastPayDay
-        salary.lastPayDay = today;
+    //     // Check Payroll Balance
+    //     if (token.balanceOf(this) < total) throw;
+    //     // Update LastPayDay
+    //     salary.lastPayDay = today;
 
-        // Transfer Tokens
-        token.transfer(msg.sender, total);
-    }
-
+    //     // Transfer Tokens
+    //     token.transfer(msg.sender, total);
     
   }
 
   /* ORACLE ONLY */
   function setExchangeRate(address[] tokens, uint256[] usdExchangeRates) external onlyOracle {
       if (tokens.length != usdExchangeRates.length) throw;
-
-      for (uint i = 0; i < tokens.length; i++) {
+      for (var i = 0; i < tokens.length; i++) {
           tokenUSDValueOf[tokens[i]] = usdExchangeRates[i];
       }
   }
