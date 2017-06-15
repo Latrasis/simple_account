@@ -6,5 +6,7 @@ node_js:
 - "7"
 cache:
   yarn: true
+notifications:
+  email: false
 script:
   - npm test
