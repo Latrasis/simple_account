@@ -7,7 +7,7 @@ if [ ! $trpc_running ]; then
   testrpc > /dev/null &
   trpc_pid=$!
 fi
-./node_modules/truffle/cli.js test
+./node_modules/.bin/truffle test
 if [ ! $trpc_running ]; then
   kill -9 $trpc_pid
 fi
