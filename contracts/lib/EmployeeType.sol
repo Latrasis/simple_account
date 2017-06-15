@@ -77,6 +77,4 @@ library EmployeeType {
     return now / 1 days;
   }
 
-
-
 }
