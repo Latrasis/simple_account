@@ -9,4 +9,5 @@ cache:
 notifications:
   email: false
 script:
-  - npm test
+  - testrpc > /dev/null &
+  - truffle test
