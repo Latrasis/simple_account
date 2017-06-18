@@ -5,53 +5,11 @@ import "zeppelin/ownership/Ownable.sol";
 /// AbstractPayroll
 /// Defines a base contract that handles a daily payroll of employees
 contract AbstractPayroll {
-  
-  // Employee
-  mapping (address => Employee) public employeeOf;
-  uint256 public employeeCount;
-
-  // Tokens
-  mapping (address => uint256) public tokenUSDValueOf;
-
-  // Oracle
-  address public oracle;
 
   event UpdateExchangeRate(address token, uint256 USDrate, address oracle, uint256 timestamp);
   event NewEmployee(address accountAddress, uint256 timestamp);
   event RemovedEmployee(address accountAddress, uint256 timestamp);
-
-  /// A Token Salary
-  struct Salary {
-    /// An ERC20 basic token
-    address token;
-    /// A daily salary of that specific token
-    uint256 dailySalary;
-    /// Total Salary Spent
-    uint256 lastPayDay;
-  }
-
-  /// Defines an Employee Salary
-  struct Employee {
-    /// Array of Token Salaries
-    Salary[] allowedTokens;
-    // Defined in USD
-    uint256 totalDailySalary;
-  }
-
-  modifier onlyEmployee() {
-    if (employeeOf[msg.sender].totalDailySalary == 0) {
-      throw;
-    }
-    _;
-  }
-
-  modifier onlyOracle() {
-    if (msg.sender == oracle) {
-      throw;
-    }
-    _;
-  }
-
+  
   /* PAYABLE */
 
   /// Used primarily by owner to refill 

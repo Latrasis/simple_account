@@ -1,12 +1,41 @@
 pragma solidity ^0.4.11;
 
 import "zeppelin/lifecycle/TokenDestructible.sol";
-import "./AbstractPayroll.sol";
 import "zeppelin/SafeMath.sol";
 import "zeppelin/token/ERC20Basic.sol";
 
+import "./AbstractPayroll.sol";
+import "./lib/EmployeeType.sol";
+import "./lib/SalaryType.sol";
+
 contract Payroll is AbstractPayroll, TokenDestructible {
+  using SalaryType for SalaryType.Self;
+  using EmployeeType for EmployeeType.Self;
   using SafeMath for uint;
+
+  // Employee
+  mapping (address => EmployeeType.Self) public employeeOf;
+  uint256 public employeeCount;
+
+  // Tokens
+  mapping (address => uint256) public tokenUSDValueOf;
+
+  // Oracle
+  address public oracle;
+
+  modifier onlyEmployee() {
+    if (employeeOf[msg.sender].employee == 0) {
+      throw;
+    }
+    _;
+  }
+
+  modifier onlyOracle() {
+    if (msg.sender == oracle) {
+      throw;
+    }
+    _;
+  }
 
   function Payroll(address _oracle) {
     oracle = _oracle;
@@ -19,7 +48,7 @@ contract Payroll is AbstractPayroll, TokenDestructible {
 
   // Salary Accessor
   function getSalaryOf(address eAddress) constant returns (uint256) {
-      return employeeOf[eAddress].totalDailySalary;
+      return employeeOf[eAddress].totalSalary;
   }
 
   // Finds Allocation of an Employee (Very Dirty)
