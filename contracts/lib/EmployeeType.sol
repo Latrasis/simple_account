@@ -29,28 +29,28 @@ library EmployeeType {
       self.startTime = today();
   }
   
-  function owed(Self storage self) internal constant returns (uint owedPayments) {
+  /// Check how much in base salary (USD) is owed in total
+  function totalOwed(Self storage self) internal constant returns (uint owedPayments) {
       for (uint i = 0; i < self.tokenSalaries.length; i++) {
           owedPayments += self.tokenSalaries[i].allocationOwed(self.paymentPeriod);
       }
   }
 
-  /// Update Salary
+  /// Set Salary
   /// tokens: List of ERC20 token addresses, must correlate with tokenSalary index
   /// allocations: Correlated by index, amount in base token, where sum of all allocations = totalSalary
   /// totalSalary: Total salary per period
   /// paymentPeriod: Period of days per salary
-  function updateSalary(Self storage self, address[] tokens, uint256[] allocations, uint256 totalSalary, uint256 paymentPeriod) internal returns (bool error) {
+  function setSalary(Self storage self, address[] tokens, uint256[] allocations, uint256 totalSalary, uint256 paymentPeriod) internal returns (bool error) {
     // Check params
     if (tokens.length != allocations.length || totalSalary == 0 || paymentPeriod == 0) return true;
 
     // Check if any salary is still owed
-    if (self.owed() > 0) return true;
-    // Clear Data
-    self.reset();
+    if (self.totalOwed() > 0) return true;
 
-    // Prepare Array
-    self.tokenSalaries.length = tokens.length;
+    // Prepare Temporary Array
+    var temp = new SalaryType.Self[](tokens.length);
+
     // Prepare Sum Check
     uint256 sumCheck = 0;
     for (uint256 i = 0; i < tokens.length; i++) {
@@ -59,13 +59,14 @@ library EmployeeType {
         if (nextSum < sumCheck) return true;
         sumCheck = nextSum;
 
-        self.tokenSalaries[i] = SalaryType.Self(tokens[i], 0, allocations[i], today());
+        temp[i] = SalaryType.Self(tokens[i], 0, allocations[i], today());
     }
 
     // If SumCheck does not equal totalSalary, this is an invalid Salary
     if (sumCheck != totalSalary) return true;
 
-    // At this point we can update the rest
+    // At this point we can overwrite
+    self.tokenSalaries = temp;
     self.totalSalary = totalSalary;
     self.paymentPeriod = paymentPeriod;
 
