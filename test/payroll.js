@@ -171,39 +171,6 @@ contract('Payroll', function (accounts) {
             })       
                    
         });
-        describe('.payday()', function () {
-
-            let payroll = false
-            let tokenA = false
-            let tokenB = false
-            let tokenC = false            
-            let employee = accounts[1]
-
-            before(async function() {
-                payroll = await Payroll.new()
-                tokenA = await SimpleToken.new()
-                tokenB = await SimpleToken.new()
-                tokenC = await SimpleToken.new()                
-                return payroll.addEmployee(employee, [tokenA.address, tokenB.address], [1, 1], 100)
-            })
-            
-            it('should not allow to withdraw any token if is not employee')
-            describe('if daily limit is $10 with 1A=$1 and 100%A', function () {
-                it('should withdraw 0A tokens if less than a day passed')
-                it('should withdraw 10A tokens if 1 day passed')
-                it('should withdraw 70A tokens if 7 days passed')                
-            })
-            describe('if daily limit is $10 with 1B=$5 and 100%B', function () {
-                it('should withdraw 0B tokens if less than a day passed')
-                it('should withdraw 2B tokens if 1 day passed')
-                it('should withdraw 14B tokens if 7 days passed')                
-            })
-            describe('if daily limit is $10 with 1A=$6, 1B=$2, and 50%A/50%B', function () {
-                it('should withdraw 0A,0B tokens if less than a day passed')
-                it('should withdraw 1A, 2B tokens if 1 day passed')
-                it('should withdraw 7A, 14B tokens if 7 days passed')              
-            })
-        });
     })
 
     describe('Oracle Calls', function () {
