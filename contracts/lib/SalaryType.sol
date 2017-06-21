@@ -21,7 +21,7 @@ library SalaryType {
       self.amount = 0;
       self.allocation = 0;
       self.lastPaycheckDay = today();
-  } 
+  }
 
   /// Update Token Salary given:
   /// exchangeValue: where exchangeValue * allocation = Self.amount

@@ -28,6 +28,21 @@ library EmployeeType {
       self.paymentPeriod = 0;
       self.startTime = today();
   }
+
+  /// Init Self
+  function init(Self storage self, address employee, uint256 totalSalary, uint256 paymentPeriod) internal {
+    self.reset();
+
+    self.employee = employee;
+    self.totalSalary = totalSalary;
+    self.paymentPeriod = paymentPeriod;
+    self.startTime = today();
+  }
+
+  /// Add Salary
+  function addSalary(Self storage self, SalaryType.Self memory salary) internal {
+    self.tokenSalaries[self.tokenSalaries.length++] = salary;
+  }
   
   /// Check how much in base salary (USD) is owed in total
   function totalOwed(Self storage self) internal constant returns (uint owedPayments) {
