@@ -4,6 +4,7 @@ import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/lib/SalaryType.sol";
 import "zeppelin/token/SimpleToken.sol";
+import "zeppelin/token/StandardToken.sol";
 
 contract TestSalaryType {
     using SalaryType for SalaryType.Self;
@@ -13,11 +14,10 @@ contract TestSalaryType {
     // Self::reset()
     function testShouldReset() {
         var sample_token = new SimpleToken();
-        sample_salary = SalaryType.Self(address(sample_token),1,1, 0);
+        sample_salary = SalaryType.Self(address(sample_token),1, 0);
         
         sample_salary.reset();
 
-        Assert.equal(sample_salary.amount, 0, "should reset amount");
         Assert.equal(sample_salary.allocation, 0, "should reset allocation");
         Assert.equal(sample_salary.lastPaycheckDay, now / 1 days, "should set lastPayDay to current day");
     }
@@ -30,7 +30,7 @@ contract TestSalaryType {
         var prev_day = (now / 1 days) - owed_days;
 
         var sample_token = new SimpleToken();
-        sample_salary = SalaryType.Self(address(sample_token),1,1,prev_day);
+        sample_salary = SalaryType.Self(address(sample_token),1,prev_day);
 
         // Set One Day Payment Period
         var paychecks_owed = sample_salary.paychecksOwed(1);
@@ -47,7 +47,7 @@ contract TestSalaryType {
         var allocation = 10;
 
         var sample_token = new SimpleToken();
-        sample_salary = SalaryType.Self(address(sample_token),1,allocation,prev_day);
+        sample_salary = SalaryType.Self(address(sample_token),allocation,prev_day);
 
         // Set One Day Payment Period
         var allocation_owed = sample_salary.allocationOwed(1);
@@ -55,15 +55,15 @@ contract TestSalaryType {
     }
     
     // self.updateValue()
-    function testShouldUpdateValue() {
+    function testShouldGetValue() {
         var sample_token = new SimpleToken();
-        sample_salary = SalaryType.Self(address(sample_token), 100, 100, 0);
+        sample_salary = SalaryType.Self(address(sample_token), 100, 0);
         
         // Assume 1 Token is 40 BaseToken
         var sample_value = 40;
-        sample_salary.updateValue(sample_value);
+        var (err, amount) = sample_salary.getTokenAmount(sample_value);
 
-        Assert.equal(sample_salary.amount, 4000, "should set updated token amount by allocation");
+        Assert.equal(amount, 4000, "should set updated token amount by allocation");
     }
 
     // self.issuePaycheck()
@@ -77,10 +77,10 @@ contract TestSalaryType {
         var owed_days = 1;
         var prev_day = (now / 1 days) - owed_days;
 
-        sample_salary = SalaryType.Self(address(sample_token), 100, 100, prev_day);
+        sample_salary = SalaryType.Self(address(sample_token), 100, prev_day);
 
         // Assume 1 Token is 1 BaseToken
-        uint sample_value = 1;
+        uint sample_value = 1 * 10 << 7;
         // Assume 1 Day pay period
         uint sample_payperiod = 1;
 
@@ -88,12 +88,8 @@ contract TestSalaryType {
         Assert.equal(res, false, "Should Issue Paycheck");
 
         // Check Balance of Employer and Employee
-        var employerBalance = sample_token.balanceOf(address(this));
-        var employeeBalance = sample_token.balanceOf(sample_employee);
-
-        Assert.equal(employerBalance, 9900, "Should dedecut token from employer");
-        Assert.equal(employeeBalance, 100, "Should send token to employee");
-
+        var allocated_payment = sample_token.allowance(address(this), sample_employee);
+        Assert.equal(allocated_payment, 100, "Should allocate token to employee");
     }
 
 }

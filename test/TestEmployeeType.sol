@@ -18,7 +18,7 @@ contract TestEmployeeType {
 
         // New Sample Salary
         var sample_token = new SimpleToken();
-        var sample_salary = SalaryType.Self(address(sample_token),1,1, 0);
+        var sample_salary = SalaryType.Self(address(sample_token), 100, 0);
 
         // Init Sample Employee
         sample_employee.init(address(0x123), 1000, 30);

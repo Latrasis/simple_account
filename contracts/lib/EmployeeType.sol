@@ -11,13 +11,17 @@ library EmployeeType {
   struct Self {
     // Employee Address
     address employee;
+    // Base Token Address
+    address baseToken;
     // Total salary per period
     uint256 totalSalary;
     // Defined in USD
     uint256 paymentPeriod;
     // Employment Date
     uint256 startTime;
-    // Array of Token Salaries
+    // Allocation in Tokens Total
+    uint256 totalAllocation;
+    // Array of other Token Salaries
     SalaryType.Self[] tokenSalaries;
   }
 
@@ -29,7 +33,7 @@ library EmployeeType {
       self.startTime = today();
   }
 
-  /// Init Self
+  /// Init Self + Creates Base Token Salary
   function init(Self storage self, address employee, uint256 totalSalary, uint256 paymentPeriod) internal {
     self.reset();
 
@@ -43,49 +47,26 @@ library EmployeeType {
   function addSalary(Self storage self, SalaryType.Self memory salary) internal {
     self.tokenSalaries[self.tokenSalaries.length++] = salary;
   }
+
+  /// Allocate a Token Salary
+  function allocate(Self storage self, address token, uint256 allocation) internal returns (bool error) {
+
+    // Total token allocations must be within totalSalary, also check for overflows
+    var newTotal = self.totalAllocation + allocation;
+    if (newTotal > self.totalSalary || newTotal < self.totalAllocation) return true;
+
+    // Otherwise we can add this token salary
+    self.totalAllocation = newTotal;
+    self.tokenSalaries[self.tokenSalaries.length++] = SalaryType.Self(token, allocation, today());
+
+    return false;
+  }
   
   /// Check how much in base salary (USD) is owed in total
   function totalOwed(Self storage self) internal constant returns (uint owedPayments) {
       for (uint i = 0; i < self.tokenSalaries.length; i++) {
           owedPayments += self.tokenSalaries[i].allocationOwed(self.paymentPeriod);
       }
-  }
-
-  /// Set Salary
-  /// tokens: List of ERC20 token addresses, must correlate with tokenSalary index
-  /// allocations: Correlated by index, amount in base token, where sum of all allocations = totalSalary
-  /// totalSalary: Total salary per period
-  /// paymentPeriod: Period of days per salary
-  function setSalary(Self storage self, address[] tokens, uint256[] allocations, uint256 totalSalary, uint256 paymentPeriod) internal returns (bool error) {
-    // Check params
-    if (tokens.length != allocations.length || totalSalary == 0 || paymentPeriod == 0) return true;
-
-    // Check if any salary is still owed
-    if (self.totalOwed() > 0) return true;
-
-    // Prepare Temporary Array
-    var temp = new SalaryType.Self[](tokens.length);
-
-    // Prepare Sum Check
-    uint256 sumCheck = 0;
-    for (uint256 i = 0; i < tokens.length; i++) {
-        // Check for overflows, but return error
-        var nextSum = sumCheck + allocations[i];
-        if (nextSum < sumCheck) return true;
-        sumCheck = nextSum;
-
-        temp[i] = SalaryType.Self(tokens[i], 0, allocations[i], today());
-    }
-
-    // If SumCheck does not equal totalSalary, this is an invalid Salary
-    if (sumCheck != totalSalary) return true;
-
-    // At this point we can overwrite
-    self.tokenSalaries = temp;
-    self.totalSalary = totalSalary;
-    self.paymentPeriod = paymentPeriod;
-
-    return false;
   }
 
   // determines today's index.

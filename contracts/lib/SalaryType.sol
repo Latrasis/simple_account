@@ -1,6 +1,6 @@
 pragma solidity ^0.4.8;
 
-import "zeppelin/token/ERC20Basic.sol";
+import "zeppelin/token/ERC20.sol";
 
 /// A Token Salary
 library SalaryType {
@@ -8,8 +8,6 @@ library SalaryType {
   struct Self {
     // An ERC20 basic token
     address token;
-    // Token Salary
-    uint amount;
     // Allocation in Base Token
     uint allocation;
     // Time since last paycheck
@@ -18,20 +16,17 @@ library SalaryType {
 
   /// Reset Self
   function reset(Self storage self) internal {
-      self.amount = 0;
       self.allocation = 0;
       self.lastPaycheckDay = today();
   }
 
-  /// Update Token Salary given:
-  /// exchangeValue: where exchangeValue * allocation = Self.amount
-  function updateValue(Self storage self, uint256 exchangeValue) internal returns (bool error) {
+  /// Get Token Amount by Exchange Value
+  /// Exchange value must be set in denominations of 7 decimal places
+  function getTokenAmount(Self storage self, uint256 exchangeValue) internal returns (bool error, uint256 amount) {
     // Checks for Token address and valid params
-    if (self.token == 0 || exchangeValue == 0) return true;
-
-    // TODO: Need to handle conversion checks for accuracy
-    self.amount = exchangeValue * self.allocation;
-    return false;
+    error = self.token == 0 || exchangeValue == 0;
+    // Exchange value must be set in denominations of 7 decimal places
+    amount = (exchangeValue * self.allocation) / (10 << 7);
   }
 
   /// Check how many paychecks owed
@@ -57,25 +52,25 @@ library SalaryType {
   /// paymentPeriod: minimum period of days between paychecks
   function issuePaycheck(Self storage self, address employee, uint paymentPeriod, uint exchangeValue) internal returns (bool error) {
 
-    // Update Value
-    self.updateValue(exchangeValue);
+    // Get Value
+    var (err, amount) = self.getTokenAmount(exchangeValue);
+    if (err) return true;
 
     // Check paychecks owed
     var paymentsOwed = self.paychecksOwed(paymentPeriod);
     if (paymentsOwed == 0) return true;
 
-    var sumOwed = self.amount * paymentsOwed;
+    // Exchange Value is Denominated 
+    var sumOwed = 0 * paymentsOwed;
 
-    var token = ERC20Basic(self.token);
-    // Check Balance of Employer
-    var employerBalance = token.balanceOf(address(this));
-    // If Employer is unable to pay, throw
-    if (employerBalance < sumOwed) return true;
-
-    // If able, first update self
+    // Get Token
+    var token = ERC20(self.token);
+    // Update Payday
     self.lastPaycheckDay = today();
-    // Then send paycheck
-    token.transfer(employee, sumOwed);
+    // Get Current Allowance
+    var current = token.allowance(this, employee);
+    // Update Allowance
+    token.approve(employee, sumOwed + current);
 
     return false;
   }
@@ -84,6 +79,5 @@ library SalaryType {
   function today() private constant returns (uint) {
     return now / 1 days;
   }
-
 
 }
