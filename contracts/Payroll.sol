@@ -5,16 +5,16 @@ import "zeppelin/SafeMath.sol";
 import "zeppelin/token/ERC20Basic.sol";
 
 import "./AbstractPayroll.sol";
-import "./lib/EmployeeType.sol";
+import "./lib/SalaryType.sol";
 import "./lib/AllocationType.sol";
 
 contract Payroll is AbstractPayroll, TokenDestructible {
   using AllocationType for AllocationType.Self;
-  using EmployeeType for EmployeeType.Self;
+  using SalaryType for SalaryType.Self;
   using SafeMath for uint;
 
   // Employee
-  mapping (address => EmployeeType.Self) public employeeOf;
+  mapping (address => SalaryType.Self) public employeeOf;
   uint256 public employeeCount;
 
   // Tokens

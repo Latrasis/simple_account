@@ -2,10 +2,10 @@ pragma solidity ^0.4.8;
 
 import "./AllocationType.sol";
 
-/// An Employee
-library EmployeeType {
+/// An Employee Salary
+library SalaryType {
   using AllocationType for AllocationType.Self;
-  using EmployeeType for EmployeeType.Self;
+  using SalaryType for SalaryType.Self;
 
   struct Self {
     // Employee Address

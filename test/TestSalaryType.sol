@@ -2,15 +2,15 @@ pragma solidity ^0.4.2;
 
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
-import "../contracts/lib/EmployeeType.sol";
+import "../contracts/lib/SalaryType.sol";
 import "../contracts/lib/AllocationType.sol";
 import "zeppelin/token/SimpleToken.sol";
 
-contract TestEmployeeType {
+contract TestSalaryType {
     using AllocationType for AllocationType.Self;
-    using EmployeeType for EmployeeType.Self;
+    using SalaryType for SalaryType.Self;
     
-    EmployeeType.Self sample_employee;
+    SalaryType.Self sample_employee;
     AllocationType.Self[] sample_salaries;
 
     // Self::reset()
