@@ -2,7 +2,6 @@ pragma solidity ^0.4.8;
 
 import "./SalaryType.sol";
 
-
 /// An Employee
 library EmployeeType {
   using SalaryType for SalaryType.Self;
@@ -11,17 +10,22 @@ library EmployeeType {
   struct Self {
     // Employee Address
     address employee;
+
     // Base Token Address
     address baseToken;
     // Total salary per period
     uint256 totalSalary;
-    // Defined in USD
+
+    // Payment Period (Defined in Days)
     uint256 paymentPeriod;
-    // Employment Date
+    // Employment Date (Defined in Days)
     uint256 startTime;
-    // Allocation in Tokens Total
+
+    // Total Allocation of Non-Base Tokens
+    // Must be less than or equal to totalSalary
     uint256 totalAllocation;
-    // Array of other Token Salaries
+
+    // Array of Non-Base Token Salaries
     SalaryType.Self[] tokenSalaries;
   }
 
@@ -35,21 +39,17 @@ library EmployeeType {
 
   /// Init Self + Creates Base Token Salary
   function init(Self storage self, address employee, uint256 totalSalary, uint256 paymentPeriod) internal {
-    self.reset();
-
     self.employee = employee;
     self.totalSalary = totalSalary;
     self.paymentPeriod = paymentPeriod;
     self.startTime = today();
-  }
-
-  /// Add Salary
-  function addSalary(Self storage self, SalaryType.Self memory salary) internal {
-    self.tokenSalaries[self.tokenSalaries.length++] = salary;
+    self.tokenSalaries.length = 0;    
   }
 
   /// Allocate a Token Salary
   function allocate(Self storage self, address token, uint256 allocation) internal returns (bool error) {
+    // Must Not be Base Token
+    if (token == self.baseToken) return true;
 
     // Total token allocations must be within totalSalary, also check for overflows
     var newTotal = self.totalAllocation + allocation;
@@ -62,7 +62,7 @@ library EmployeeType {
     return false;
   }
   
-  /// Check how much in base salary (USD) is owed in total
+  /// Check how much in base salary is owed in total
   function totalOwed(Self storage self) internal constant returns (uint owedPayments) {
       for (uint i = 0; i < self.tokenSalaries.length; i++) {
           owedPayments += self.tokenSalaries[i].allocationOwed(self.paymentPeriod);
