@@ -61,7 +61,7 @@ contract TestSalaryType {
         
         // Assume 1 Token is 40 BaseToken
         var sample_value = 40;
-        var (err, amount) = sample_salary.getTokenAmount(sample_value);
+        var (err, amount) = sample_salary.getTokenAmount(sample_value, 0);
 
         Assert.equal(amount, 4000, "should set updated token amount by allocation");
     }
@@ -80,12 +80,13 @@ contract TestSalaryType {
         sample_salary = SalaryType.Self(address(sample_token), 100, prev_day);
 
         // Assume 1 Token is 1 BaseToken
-        uint sample_value = 1 * 10 << 7;
+        uint sample_value = 1;
+        uint8 decimals = 0;
         // Assume 1 Day pay period
         uint sample_payperiod = 1;
 
-        var res = sample_salary.issuePaycheck(sample_employee, sample_payperiod, sample_value);
-        Assert.equal(res, false, "Should Issue Paycheck");
+        var err1 = sample_salary.issuePaycheck(sample_employee, sample_payperiod, sample_value, decimals);
+        Assert.equal(err1, false, "Should Issue Paycheck");
 
         // Check Balance of Employer and Employee
         var allocated_payment = sample_token.allowance(address(this), sample_employee);

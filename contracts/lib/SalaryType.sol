@@ -21,12 +21,12 @@ library SalaryType {
   }
 
   /// Get Token Amount by Exchange Value
-  /// Exchange value must be set in denominations of 7 decimal places
-  function getTokenAmount(Self storage self, uint256 exchangeValue) internal returns (bool error, uint256 amount) {
+  /// Exchange value must be set in denominations of given decimal places
+  function getTokenAmount(Self storage self, uint256 exchangeValue, uint8 decimals) internal returns (bool error, uint256 amount) {
     // Checks for Token address and valid params
     error = self.token == 0 || exchangeValue == 0;
     // Exchange value must be set in denominations of 7 decimal places
-    amount = (exchangeValue * self.allocation) / (10 << 7);
+    amount = (exchangeValue * self.allocation) / uint256(10 ** decimals);
   }
 
   /// Check how many paychecks owed
@@ -50,18 +50,18 @@ library SalaryType {
   /// Issue paycheck based on days passed
   /// employee: address to send paycheck to
   /// paymentPeriod: minimum period of days between paychecks
-  function issuePaycheck(Self storage self, address employee, uint paymentPeriod, uint exchangeValue) internal returns (bool error) {
+  function issuePaycheck(Self storage self, address employee, uint paymentPeriod, uint exchangeValue, uint8 decimals) internal returns (bool error) {
 
     // Get Value
-    var (err, amount) = self.getTokenAmount(exchangeValue);
+    var (err, amount) = self.getTokenAmount(exchangeValue, decimals);
     if (err) return true;
 
     // Check paychecks owed
     var paymentsOwed = self.paychecksOwed(paymentPeriod);
     if (paymentsOwed == 0) return true;
 
-    // Exchange Value is Denominated 
-    var sumOwed = 0 * paymentsOwed;
+    // Get Sum Owed By Current Exchange Value
+    var sumOwed = amount * paymentsOwed;
 
     // Get Token
     var token = ERC20(self.token);
