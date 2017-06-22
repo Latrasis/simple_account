@@ -2,19 +2,19 @@ pragma solidity ^0.4.2;
 
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
-import "../contracts/lib/SalaryType.sol";
+import "../contracts/lib/AllocationType.sol";
 import "zeppelin/token/SimpleToken.sol";
 import "zeppelin/token/StandardToken.sol";
 
-contract TestSalaryType {
-    using SalaryType for SalaryType.Self;
+contract TestAllocationType {
+    using AllocationType for AllocationType.Self;
 
-    SalaryType.Self sample_salary;
+    AllocationType.Self sample_salary;
 
     // Self::reset()
     function testShouldReset() {
         var sample_token = new SimpleToken();
-        sample_salary = SalaryType.Self(address(sample_token),1, 0);
+        sample_salary = AllocationType.Self(address(sample_token),1, 0);
         
         sample_salary.reset();
 
@@ -30,7 +30,7 @@ contract TestSalaryType {
         var prev_day = (now / 1 days) - owed_days;
 
         var sample_token = new SimpleToken();
-        sample_salary = SalaryType.Self(address(sample_token),1,prev_day);
+        sample_salary = AllocationType.Self(address(sample_token),1,prev_day);
 
         // Set One Day Payment Period
         var paychecks_owed = sample_salary.paychecksOwed(1);
@@ -47,7 +47,7 @@ contract TestSalaryType {
         var allocation = 10;
 
         var sample_token = new SimpleToken();
-        sample_salary = SalaryType.Self(address(sample_token),allocation,prev_day);
+        sample_salary = AllocationType.Self(address(sample_token),allocation,prev_day);
 
         // Set One Day Payment Period
         var allocation_owed = sample_salary.allocationOwed(1);
@@ -57,7 +57,7 @@ contract TestSalaryType {
     // self.updateValue()
     function testShouldGetValue() {
         var sample_token = new SimpleToken();
-        sample_salary = SalaryType.Self(address(sample_token), 100, 0);
+        sample_salary = AllocationType.Self(address(sample_token), 100, 0);
         
         // Assume 1 Token is 40 BaseToken
         var sample_value = 40;
@@ -77,7 +77,7 @@ contract TestSalaryType {
         var owed_days = 1;
         var prev_day = (now / 1 days) - owed_days;
 
-        sample_salary = SalaryType.Self(address(sample_token), 100, prev_day);
+        sample_salary = AllocationType.Self(address(sample_token), 100, prev_day);
 
         // Assume 1 Token is 1 BaseToken
         uint sample_value = 1;

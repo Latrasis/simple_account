@@ -3,22 +3,22 @@ pragma solidity ^0.4.2;
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 import "../contracts/lib/EmployeeType.sol";
-import "../contracts/lib/SalaryType.sol";
+import "../contracts/lib/AllocationType.sol";
 import "zeppelin/token/SimpleToken.sol";
 
 contract TestEmployeeType {
-    using SalaryType for SalaryType.Self;
+    using AllocationType for AllocationType.Self;
     using EmployeeType for EmployeeType.Self;
     
     EmployeeType.Self sample_employee;
-    SalaryType.Self[] sample_salaries;
+    AllocationType.Self[] sample_salaries;
 
     // Self::reset()
     function testShouldInitialize() {
 
         // New Sample Salary
         var sample_token = new SimpleToken();
-        var sample_salary = SalaryType.Self(address(sample_token), 100, 0);
+        var sample_salary = AllocationType.Self(address(sample_token), 100, 0);
 
         // Init Sample Employee
         sample_employee.init(address(0x123), 1000, 30);

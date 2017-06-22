@@ -3,8 +3,8 @@ pragma solidity ^0.4.8;
 import "zeppelin/token/ERC20.sol";
 
 /// A Token Salary
-library SalaryType {
-  using SalaryType for SalaryType.Self;
+library AllocationType {
+  using AllocationType for AllocationType.Self;
   struct Self {
     // An ERC20 basic token
     address token;

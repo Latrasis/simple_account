@@ -1,10 +1,10 @@
 pragma solidity ^0.4.8;
 
-import "./SalaryType.sol";
+import "./AllocationType.sol";
 
 /// An Employee
 library EmployeeType {
-  using SalaryType for SalaryType.Self;
+  using AllocationType for AllocationType.Self;
   using EmployeeType for EmployeeType.Self;
 
   struct Self {
@@ -26,7 +26,7 @@ library EmployeeType {
     uint256 totalAllocation;
 
     // Array of Non-Base Token Salaries
-    SalaryType.Self[] tokenSalaries;
+    AllocationType.Self[] tokenSalaries;
   }
 
   /// Reset Self
@@ -57,7 +57,7 @@ library EmployeeType {
 
     // Otherwise we can add this token salary
     self.totalAllocation = newTotal;
-    self.tokenSalaries[self.tokenSalaries.length++] = SalaryType.Self(token, allocation, today());
+    self.tokenSalaries[self.tokenSalaries.length++] = AllocationType.Self(token, allocation, today());
 
     return false;
   }
