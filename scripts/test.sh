@@ -4,7 +4,7 @@ output=$(nc -z localhost 8545; echo $?)
 [ $output -eq "0" ] && trpc_running=true
 if [ ! $trpc_running ]; then
   echo "Starting our own testrpc node instance"
-  testrpc > /dev/null &
+  ganache-cli > /dev/null &
   trpc_pid=$!
 fi
 ./node_modules/.bin/truffle test
